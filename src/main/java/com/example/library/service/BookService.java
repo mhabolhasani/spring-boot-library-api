@@ -4,16 +4,14 @@ import com.example.library.dto.Book;
 import org.springframework.stereotype.Service;
 
 import javax.print.attribute.HashAttributeSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 @Service
 public class BookService {
     private HashMap<Long , Book> books = new HashMap<>();
 
-    public HashMap<Long , Book> getAllBooks(){
-        return this.books;
+    public List<Book> getAllBooks(){
+        return books.values().stream().sorted(Comparator.comparingLong(Book::getId)).toList();
     }
 
     public Book getBook(long id){

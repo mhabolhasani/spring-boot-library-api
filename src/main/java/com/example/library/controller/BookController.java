@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/books")
@@ -19,8 +20,9 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<HashMap<Long, Book>> getAllBooks() {
-        return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
+    public ResponseEntity<List<Book>> getAllBooks() {
+        List<Book> allBooks = bookService.getAllBooks();
+        return ResponseEntity.status(HttpStatus.OK).body(allBooks);
     }
 
     @GetMapping("/{id}")
@@ -30,26 +32,26 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable long id) {
+    public ResponseEntity<Long> deleteBook(@PathVariable long id) {
         bookService.deleteBook(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Book deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PostMapping
-    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+    public ResponseEntity<Long> addBook(@RequestBody Book book) {
         bookService.addBook(book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(book);
+        return ResponseEntity.status(HttpStatus.CREATED).body(book.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> putBook(@PathVariable long id, @RequestBody Book book){
+    public ResponseEntity<Long> putBook(@PathVariable long id, @RequestBody Book book){
         bookService.putBook(book);
-        return ResponseEntity.status(HttpStatus.OK).body(book);
+        return ResponseEntity.status(HttpStatus.OK).body(book.getId());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable long id, @RequestBody Book book){
+    public ResponseEntity<Long> updateBook(@PathVariable long id, @RequestBody Book book){
         Book updatedBook = bookService.updateBook(book);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedBook);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedBook.getId());
     }
 }
