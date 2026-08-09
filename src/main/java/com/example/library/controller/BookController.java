@@ -45,13 +45,19 @@ public class BookController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> putBook(@PathVariable long id, @RequestBody Book book){
-        bookService.putBook(book);
-        return ResponseEntity.status(HttpStatus.OK).body(book.getId());
+        Book updatedBook = bookService.putBook(id,book);
+        if (updatedBook==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(updatedBook.getId());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> updateBook(@PathVariable long id, @RequestBody Book book){
-        Book updatedBook = bookService.updateBook(book);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedBook.getId());
+    public ResponseEntity<Long> updateBook(@PathVariable long id, @RequestBody Book book) {
+        Book updatedBook = bookService.updateBook(id, book);
+        if (updatedBook == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedBook.getId());
     }
 }

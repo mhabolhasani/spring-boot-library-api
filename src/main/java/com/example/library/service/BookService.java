@@ -29,30 +29,26 @@ public class BookService {
         return book;
     }
 
-    public Book updateBook(Book book) {
-        if(!books.containsKey(book.getId())){
+    public Book updateBook(long id, Book book) {
+        Book bookInMemory = books.get(id);
+        if (bookInMemory == null) {
             return null;
         }
-
-        long id = book.getId();
-        Book bookInMemory = books.get(id);
-
-        if(book.getAuthor() != null){
+        if (book.getAuthor() != null) {
             bookInMemory.setAuthor(book.getAuthor());
         }
-
-        if(book.getName() != null){
+        if (book.getName() != null) {
             bookInMemory.setName(book.getName());
         }
         return bookInMemory;
     }
 
-
-    public void putBook(Book book) {
-        long id = book.getId();
+    public Book putBook(long id ,Book book) {
+        book.setId(id);
         if (!books.containsKey(id)) {
-            return;
+            return null;
         }
         books.put(id, book);
+        return book;
     }
 }
