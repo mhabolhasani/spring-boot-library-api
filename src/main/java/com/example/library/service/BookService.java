@@ -11,7 +11,9 @@ public class BookService {
     private HashMap<Long , Book> books = new HashMap<>();
 
     public List<Book> getAllBooks(){
-        return books.values().stream().sorted(Comparator.comparingLong(Book::getId)).toList();
+        return books.values().stream()
+        .sorted(Comparator.comparingLong(Book::getId))
+        .toList();
     }
 
     public Book getBook(long id){
