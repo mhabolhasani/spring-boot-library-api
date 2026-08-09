@@ -3,11 +3,14 @@ package com.example.library.service;
 import com.example.library.dto.Book;
 import org.springframework.stereotype.Service;
 
+import javax.print.attribute.HashAttributeSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @Service
 public class BookService {
-    private HashMap<Long , Book> books;
+    private HashMap<Long , Book> books = new HashMap<>();
 
     public HashMap<Long , Book> getAllBooks(){
         return this.books;
