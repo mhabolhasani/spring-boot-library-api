@@ -22,8 +22,11 @@ public class BookService {
         books.remove(id);
     }
 
-    public void addBook(Book book){
-        books.put(book.getId() , book);
+    public Book addBook(Book book){
+        long id = (long) (books.size() + 1);
+        book.setId(id);
+        books.put(id, book);
+        return book;
     }
 
     public Book updateBook(Book book) {
