@@ -2,6 +2,8 @@ package com.example.library.controller;
 
 import com.example.library.dto.Book;
 import com.example.library.service.BookService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -17,36 +19,37 @@ public class BookController {
     }
 
     @GetMapping
-    public HashMap<Long, Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<HashMap<Long, Book>> getAllBooks() {
+        return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
     }
 
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable long id) {
-        return bookService.getBook(id);
+    public ResponseEntity<Book> getBook(@PathVariable long id) {
+        Book book = bookService.getBook(id);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteBook(@PathVariable long id) {
+    public ResponseEntity<String> deleteBook(@PathVariable long id) {
         bookService.deleteBook(id);
-        return "Book deleted";
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Book deleted");
     }
 
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
+    public ResponseEntity<Book> addBook(@RequestBody Book book) {
         bookService.addBook(book);
-        return book;
+        return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
     @PutMapping("/{id}")
-    public Book putBook(@PathVariable long id, @RequestBody Book book) {
+    public ResponseEntity<Book> putBook(@PathVariable long id, @RequestBody Book book){
         bookService.putBook(book);
-        return book;
+        return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
     @PatchMapping("/{id}")
-    public Book updateBook(@PathVariable long id, @RequestBody Book book) {
-        bookService.updateBook(book);
-        return book;
+    public ResponseEntity<Book> updateBook(@PathVariable long id, @RequestBody Book book){
+        Book updatedBook = bookService.updateBook(book);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedBook);
     }
 }

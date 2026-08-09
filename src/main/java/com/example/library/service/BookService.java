@@ -28,9 +28,9 @@ public class BookService {
         books.put(book.getId() , book);
     }
 
-    public void updateBook(Book book) {
+    public Book updateBook(Book book) {
         if(!books.containsKey(book.getId())){
-            return;
+            return null;
         }
 
         long id = book.getId();
@@ -43,6 +43,7 @@ public class BookService {
         if(book.getName() != null){
             bookInMemory.setName(book.getName());
         }
+        return bookInMemory;
     }
 
 
