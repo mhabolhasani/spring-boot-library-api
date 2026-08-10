@@ -1,7 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.dto.Book;
-import com.example.library.exception.BookNotFoundException;
+import com.example.library.exception.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -15,52 +15,55 @@ public class BookService {
 
     private final Map<Long, Book> books = new ConcurrentHashMap<>();
 
-    private static final AtomicLong num = new AtomicLong(1);
+    private static final AtomicLong ID_SEQUENCE = new AtomicLong(1);
 
-    public List<Book> getAllBooks() {
+    private static final String ERROR_CODE = "book_id_invalid";
+    private static final String ERROR_MESSAGE = "book not found";
+
+    public List<Book> getAll() {
         return books.values().stream()
                 .sorted(Comparator.comparingLong(Book::getId))
                 .toList();
     }
 
-    public Book getBook(long id) {
+    public Book get(long id) {
         if(!books.containsKey(id)){
-            throw new BookNotFoundException("1" , "not found");
+            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
         }
         return books.get(id);
     }
 
-    public void deleteBook(long id) {
+    public void delete(long id) {
         if(!books.containsKey(id)){
-            throw new BookNotFoundException("2" , "not found");
+            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
         }
         books.remove(id);
     }
 
-    public Book addBook(Book book) {
-        long id = num.getAndIncrement();
+    public Book add(Book book) {
+        long id = ID_SEQUENCE.getAndIncrement();
         book.setId(id);
         books.put(id, book);
         return book;
     }
 
-    public Book updateBook(long id, Book book) {
+    public Book patch(long id, Book book) {
         if(!books.containsKey(id)){
-            throw new BookNotFoundException("3" , "not found");
+            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
         }
-        Book bookInMemory = books.get(id);
+        Book savedBook = books.get(id);
         if (book.getAuthor() != null) {
-            bookInMemory.setAuthor(book.getAuthor());
+            savedBook.setAuthor(book.getAuthor());
         }
         if (book.getName() != null) {
-            bookInMemory.setName(book.getName());
+            savedBook.setName(book.getName());
         }
-        return bookInMemory;
+        return savedBook;
     }
 
-    public Book putBook(long id, Book book) {
+    public Book update(long id, Book book) {
         if (!books.containsKey(id)) {
-            throw new BookNotFoundException("4" , "not found");
+            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
         }
         book.setId(id);
         books.put(id, book);

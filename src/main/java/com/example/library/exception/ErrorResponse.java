@@ -8,7 +8,6 @@ public class ErrorResponse {
     public ErrorResponse(
             String code,
             String message) {
-
         this.code= code;
         this.message = message;
     }

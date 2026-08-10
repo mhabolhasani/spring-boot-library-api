@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleBookNotFound(BookNotFoundException ex){
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotFound(ValidationException ex){
         ErrorResponse err = new ErrorResponse(ex.getCode() , ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }

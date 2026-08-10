@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -20,32 +19,32 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> allBooks = bookService.getAllBooks();
+    public ResponseEntity<List<Book>> getAll() {
+        List<Book> allBooks = bookService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(allBooks);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable long id) {
-        Book book = bookService.getBook(id);
+    public ResponseEntity<Book> get(@PathVariable long id) {
+        Book book = bookService.get(id);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteBook(@PathVariable long id) {
-        bookService.deleteBook(id);
+    public ResponseEntity<Long> delete(@PathVariable long id) {
+        bookService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PostMapping
-    public ResponseEntity<Long> addBook(@RequestBody Book book) {
-        Book newBook = bookService.addBook(book);
+    public ResponseEntity<Long> add(@RequestBody Book book) {
+        Book newBook = bookService.add(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBook.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> putBook(@PathVariable long id, @RequestBody Book book){
-        Book updatedBook = bookService.putBook(id,book);
+    public ResponseEntity<Long> update(@PathVariable long id, @RequestBody Book book){
+        Book updatedBook = bookService.update(id,book);
         if (updatedBook==null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -53,8 +52,8 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> updateBook(@PathVariable long id, @RequestBody Book book) {
-        Book updatedBook = bookService.updateBook(id, book);
+    public ResponseEntity<Long> patch(@PathVariable long id, @RequestBody Book book) {
+        Book updatedBook = bookService.patch(id, book);
         if (updatedBook == null) {
             return ResponseEntity.notFound().build();
         }
