@@ -1,6 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.dto.Book;
+import com.example.library.exception.BookNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -23,26 +24,31 @@ public class BookService {
     }
 
     public Book getBook(long id) {
+        if(!books.containsKey(id)){
+            throw new BookNotFoundException("1" , "not found");
+        }
         return books.get(id);
     }
 
     public void deleteBook(long id) {
+        if(!books.containsKey(id)){
+            throw new BookNotFoundException("2" , "not found");
+        }
         books.remove(id);
     }
 
     public Book addBook(Book book) {
         long id = num.getAndIncrement();
-
         book.setId(id);
         books.put(id, book);
         return book;
     }
 
     public Book updateBook(long id, Book book) {
-        Book bookInMemory = books.get(id);
-        if (bookInMemory == null) {
-            return null;
+        if(!books.containsKey(id)){
+            throw new BookNotFoundException("3" , "not found");
         }
+        Book bookInMemory = books.get(id);
         if (book.getAuthor() != null) {
             bookInMemory.setAuthor(book.getAuthor());
         }
@@ -54,7 +60,7 @@ public class BookService {
 
     public Book putBook(long id, Book book) {
         if (!books.containsKey(id)) {
-            return null;
+            throw new BookNotFoundException("4" , "not found");
         }
         book.setId(id);
         books.put(id, book);
