@@ -17,8 +17,15 @@ public class BookService {
 
     private static final AtomicLong ID_SEQUENCE = new AtomicLong(1);
 
-    private static final String ERROR_CODE = "book_id_invalid";
-    private static final String ERROR_MESSAGE = "book not found";
+    private static final String NOT_FOUND_ERROR_CODE = "book_id_invalid";
+    private static final String NOT_FOUND_ERROR_MESSAGE = "book not found";
+
+    public Book add(Book book) {
+        long id = ID_SEQUENCE.getAndIncrement();
+        book.setId(id);
+        books.put(id, book);
+        return book;
+    }
 
     public List<Book> getAll() {
         return books.values().stream()
@@ -28,20 +35,15 @@ public class BookService {
 
     public Book get(long id) {
         if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
         return books.get(id);
     }
 
-    public void delete(long id) {
-        if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
+    public Book update(long id, Book book) {
+        if (!books.containsKey(id)) {
+            throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
         }
-        books.remove(id);
-    }
-
-    public Book add(Book book) {
-        long id = ID_SEQUENCE.getAndIncrement();
         book.setId(id);
         books.put(id, book);
         return book;
@@ -49,7 +51,7 @@ public class BookService {
 
     public Book patch(long id, Book book) {
         if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
+            throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
         }
         Book savedBook = books.get(id);
         if (book.getAuthor() != null) {
@@ -61,12 +63,10 @@ public class BookService {
         return savedBook;
     }
 
-    public Book update(long id, Book book) {
-        if (!books.containsKey(id)) {
-            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
+    public void delete(long id) {
+        if(!books.containsKey(id)){
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        book.setId(id);
-        books.put(id, book);
-        return book;
+        books.remove(id);
     }
 }

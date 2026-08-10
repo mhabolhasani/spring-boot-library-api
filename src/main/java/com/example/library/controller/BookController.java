@@ -18,6 +18,12 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @PostMapping
+    public ResponseEntity<Long> add(@RequestBody Book book) {
+        Book newBook = bookService.add(book);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBook.getId());
+    }
+
     @GetMapping
     public ResponseEntity<List<Book>> getAll() {
         List<Book> allBooks = bookService.getAll();
@@ -28,18 +34,6 @@ public class BookController {
     public ResponseEntity<Book> get(@PathVariable long id) {
         Book book = bookService.get(id);
         return ResponseEntity.status(HttpStatus.OK).body(book);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable long id) {
-        bookService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<Long> add(@RequestBody Book book) {
-        Book newBook = bookService.add(book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBook.getId());
     }
 
     @PutMapping("/{id}")
@@ -58,5 +52,11 @@ public class BookController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedBook.getId());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Long> delete(@PathVariable long id) {
+        bookService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 }
