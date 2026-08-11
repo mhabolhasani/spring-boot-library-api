@@ -1,9 +1,10 @@
 package com.example.library.service;
 
-import com.example.library.dto.Book;
+import com.example.library.dto.*;
 import com.example.library.exception.ValidationException;
 import org.springframework.stereotype.Service;
 
+import java.security.PublicKey;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +21,19 @@ public class BookService {
     private static final String ERROR_CODE = "book_id_invalid";
     private static final String ERROR_MESSAGE = "book not found";
 
-    public List<Book> getAll() {
+    public List<BookResponse> getAll() {
         return books.values().stream()
                 .sorted(Comparator.comparingLong(Book::getId))
+                .map(Book::toBookResponse)
                 .toList();
     }
 
-    public Book get(long id) {
+    public BookResponse get(long id) {
         if(!books.containsKey(id)){
             throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
         }
-        return books.get(id);
+        BookResponse bookResponse = books.get(id).toBookResponse();
+        return bookResponse;
     }
 
     public void delete(long id) {
@@ -40,33 +43,37 @@ public class BookService {
         books.remove(id);
     }
 
-    public Book add(Book book) {
+    public BookResponse add(AddBookRequestDto addBookRequestDto) {
         long id = ID_SEQUENCE.getAndIncrement();
-        book.setId(id);
+        BookResponse bookResponse = addBookRequestDto.toBookResponse(id);
+        Book book = bookResponse.toBook();
         books.put(id, book);
-        return book;
+        return bookResponse;
     }
 
-    public Book patch(long id, Book book) {
+    public long patch(long id, PatchBookRequestDto patchBookRequestDto) {
         if(!books.containsKey(id)){
             throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
         }
         Book savedBook = books.get(id);
-        if (book.getAuthor() != null) {
-            savedBook.setAuthor(book.getAuthor());
+        if (patchBookRequestDto.author() != null) {
+            savedBook.setAuthor(patchBookRequestDto.author());
         }
-        if (book.getName() != null) {
-            savedBook.setName(book.getName());
+        if (patchBookRequestDto.name() != null) {
+            savedBook.setName(patchBookRequestDto.name());
         }
-        return savedBook;
+        return id;
     }
 
-    public Book update(long id, Book book) {
+    public long update(long id, UpdateBookRequestDto updateBookRequestDto) {
         if (!books.containsKey(id)) {
             throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
         }
+        Book book = new Book();
+        book.setAuthor(updateBookRequestDto.author());
+        book.setName(updateBookRequestDto.name());
         book.setId(id);
         books.put(id, book);
-        return book;
+        return id;
     }
 }
