@@ -18,6 +18,12 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @PostMapping
+    public ResponseEntity<Long> add(@RequestBody AddBookRequestDto addBookRequestDto) {
+        BookResponse newBook = bookService.add(addBookRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBook.id());
+    }
+
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAll() {
         List<BookResponse> allBooks = bookService.getAll();
@@ -30,18 +36,6 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(bookResponse);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable long id) {
-        bookService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<Long> add(@RequestBody AddBookRequestDto addBookRequestDto) {
-        BookResponse newBook = bookService.add(addBookRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBook.id());
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Long> update(@PathVariable long id, @RequestBody UpdateBookRequestDto updateBookRequestDto){
         bookService.update(id,updateBookRequestDto);
@@ -52,5 +46,11 @@ public class BookController {
     public ResponseEntity<Long> patch(@PathVariable long id, @RequestBody PatchBookRequestDto patchBookRequestDto) {
         bookService.patch(id, patchBookRequestDto);
         return ResponseEntity.ok(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Long> delete(@PathVariable long id) {
+        bookService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 }

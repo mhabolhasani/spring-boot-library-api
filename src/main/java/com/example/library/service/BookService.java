@@ -18,8 +18,15 @@ public class BookService {
 
     private static final AtomicLong ID_SEQUENCE = new AtomicLong(1);
 
-    private static final String ERROR_CODE = "book_id_invalid";
-    private static final String ERROR_MESSAGE = "book not found";
+    private static final String NOT_FOUND_ERROR_CODE = "book_id_invalid";
+    private static final String NOT_FOUND_ERROR_MESSAGE = "book not found";
+
+    public Book add(Book book) {
+        long id = ID_SEQUENCE.getAndIncrement();
+        book.setId(id);
+        books.put(id, book);
+        return book;
+    }
 
     public List<BookResponse> getAll() {
         return books.values().stream()
@@ -30,30 +37,27 @@ public class BookService {
 
     public BookResponse get(long id) {
         if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
         BookResponse bookResponse = books.get(id).toBookResponse();
         return bookResponse;
     }
 
-    public void delete(long id) {
-        if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE, ERROR_MESSAGE);
+    public long update(long id, UpdateBookRequestDto updateBookRequestDto) {
+        if (!books.containsKey(id)) {
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        books.remove(id);
-    }
-
-    public BookResponse add(AddBookRequestDto addBookRequestDto) {
-        long id = ID_SEQUENCE.getAndIncrement();
-        BookResponse bookResponse = addBookRequestDto.toBookResponse(id);
-        Book book = bookResponse.toBook();
+        Book book = new Book();
+        book.setAuthor(updateBookRequestDto.author());
+        book.setName(updateBookRequestDto.name());
+        book.setId(id);
         books.put(id, book);
-        return bookResponse;
+        return id;
     }
 
     public long patch(long id, PatchBookRequestDto patchBookRequestDto) {
         if(!books.containsKey(id)){
-            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
+            throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
         }
         Book savedBook = books.get(id);
         if (patchBookRequestDto.author() != null) {
@@ -65,15 +69,10 @@ public class BookService {
         return id;
     }
 
-    public long update(long id, UpdateBookRequestDto updateBookRequestDto) {
-        if (!books.containsKey(id)) {
-            throw new ValidationException(ERROR_CODE , ERROR_MESSAGE);
+    public void delete(long id) {
+        if(!books.containsKey(id)){
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        Book book = new Book();
-        book.setAuthor(updateBookRequestDto.author());
-        book.setName(updateBookRequestDto.name());
-        book.setId(id);
-        books.put(id, book);
-        return id;
+        books.remove(id);
     }
 }
