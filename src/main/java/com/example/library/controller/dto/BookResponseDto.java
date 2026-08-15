@@ -1,6 +1,6 @@
 package com.example.library.dto;
 
-public record BookResponse(
+public record BookResponseDto(
         long id,
         String name,
         String author
