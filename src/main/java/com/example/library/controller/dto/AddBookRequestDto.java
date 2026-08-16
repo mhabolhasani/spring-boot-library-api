@@ -1,4 +1,4 @@
-package com.example.library.dto;
+package com.example.library.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -8,8 +8,4 @@ public record AddBookRequestDto(
 
         @NotBlank
         String author
-) {
-    public BookResponseDto toBookResponse(long id) {
-        return new BookResponseDto(id, this.name, this.author);
-    }
-}
+){}

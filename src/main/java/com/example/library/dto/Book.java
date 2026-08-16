@@ -5,6 +5,12 @@ public class Book {
     private String name;
     private String author;
 
+    public Book(long id , String name , String author){
+        setId(id);
+        setName(name);
+        setAuthor(author);
+    }
+
     public long getId() {
         return id;
     }
@@ -27,10 +33,5 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public BookResponse toBookResponse(){
-        BookResponse bookResponse = new BookResponse(this.getId(), this.getName() , this.getAuthor());
-        return bookResponse;
     }
 }

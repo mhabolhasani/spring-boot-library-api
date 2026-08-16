@@ -4,7 +4,6 @@ import com.example.library.dto.*;
 import com.example.library.exception.ValidationException;
 import org.springframework.stereotype.Service;
 
-import java.security.PublicKey;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -28,43 +27,43 @@ public class BookService {
         return book;
     }
 
-    public List<BookResponse> getAll() {
+    public List<Book> getAll() {
         return books.values().stream()
                 .sorted(Comparator.comparingLong(Book::getId))
-                .map(Book::toBookResponse)
                 .toList();
     }
 
-    public BookResponse get(long id) {
+    public Book get(long id) {
         if(!books.containsKey(id)){
             throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        BookResponse bookResponse = books.get(id).toBookResponse();
-        return bookResponse;
+        Book book = books.get(id);
+        return book;
     }
 
-    public long update(long id, UpdateBookRequestDto updateBookRequestDto) {
+    public long update(long id, Book book) {
         if (!books.containsKey(id)) {
             throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        Book book = new Book();
-        book.setAuthor(updateBookRequestDto.author());
-        book.setName(updateBookRequestDto.name());
-        book.setId(id);
+        Book updatedBook = new Book(
+                id,
+                book.getName(),
+                book.getAuthor()
+        );
         books.put(id, book);
         return id;
     }
 
-    public long patch(long id, PatchBookRequestDto patchBookRequestDto) {
+    public long patch(long id, Book book) {
         if(!books.containsKey(id)){
             throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
         }
         Book savedBook = books.get(id);
-        if (patchBookRequestDto.author() != null) {
-            savedBook.setAuthor(patchBookRequestDto.author());
+        if (book.getAuthor() != null) {
+            savedBook.setAuthor(book.getAuthor());
         }
-        if (patchBookRequestDto.name() != null) {
-            savedBook.setName(patchBookRequestDto.name());
+        if (book.getName() != null) {
+            savedBook.setName(book.getName());
         }
         return id;
     }
