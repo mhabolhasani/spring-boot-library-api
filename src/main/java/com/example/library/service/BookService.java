@@ -37,8 +37,7 @@ public class BookService {
         if(!books.containsKey(id)){
             throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        Book book = books.get(id);
-        return book;
+        return books.get(id);
     }
 
     public long update(long id, Book book) {
@@ -50,7 +49,7 @@ public class BookService {
                 book.getName(),
                 book.getAuthor()
         );
-        books.put(id, book);
+        books.put(id, updatedBook);
         return id;
     }
 

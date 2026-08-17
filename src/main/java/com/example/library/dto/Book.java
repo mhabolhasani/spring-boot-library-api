@@ -1,37 +1,18 @@
 package com.example.library.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Book {
-    private long id;
+    private Integer id;
     private String name;
     private String author;
 
-    public Book(long id , String name , String author){
+    public Book(Integer id , String name , String author){
         setId(id);
         setName(name);
         setAuthor(author);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 }

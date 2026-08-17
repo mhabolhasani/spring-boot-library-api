@@ -1,7 +1,6 @@
 package com.example.library.controller;
 
 import com.example.library.controller.dto.*;
-import com.example.library.controller.mapper.BookMapper;
 import com.example.library.dto.Book;
 import com.example.library.service.BookService;
 import org.springframework.http.HttpStatus;
@@ -22,35 +21,36 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Long> add(@RequestBody AddBookRequestDto addBookRequestDto) {
-        Book newBook = bookService.add(BookMapper.toBook(addBookRequestDto));
-        BookResponseDto bookResponseDto = BookMapper.toResponseDto(newBook);
+        Book newBook = bookService.add(addBookRequestDto.toBook());
         return ResponseEntity.status(HttpStatus.CREATED).body(newBook.getId());
     }
 
     @GetMapping
     public ResponseEntity<List<BookResponseDto>> getAll() {
         List<Book> allBooks = bookService.getAll();
-        List<BookResponseDto> allBooksDto = BookMapper.toResponseDtos(allBooks);
+        List<BookResponseDto> allBooksDto = allBooks.stream()
+                .map(BookResponseDto::from)
+                .toList();
         return ResponseEntity.status(HttpStatus.OK).body(allBooksDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDto> get(@PathVariable long id) {
         Book book = bookService.get(id);
-        BookResponseDto bookResponseDto = BookMapper.toResponseDto(book);
+        BookResponseDto bookResponseDto = BookResponseDto.from(book);
         return ResponseEntity.status(HttpStatus.OK).body(bookResponseDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> update(@PathVariable long id, @RequestBody UpdateBookRequestDto updateBookRequestDto){
-        Book book = BookMapper.toBook(updateBookRequestDto);
+        Book book = updateBookRequestDto.toBook();
         bookService.update(id,book);
         return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Long> patch(@PathVariable long id, @RequestBody PatchBookRequestDto patchBookRequestDto) {
-        Book book = BookMapper.toBook(patchBookRequestDto);
+        Book book = patchBookRequestDto.toBook();
         bookService.patch(id, book);
         return ResponseEntity.ok(id);
     }
