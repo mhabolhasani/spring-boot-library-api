@@ -1,7 +1,6 @@
 package com.example.library.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class ValidationException extends RuntimeException{
