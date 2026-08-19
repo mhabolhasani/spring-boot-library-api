@@ -1,18 +1,14 @@
 package com.example.library.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Book {
-    private Integer id;
+    private Long id;
     private String name;
     private String author;
-
-    public Book(Integer id , String name , String author){
-        setId(id);
-        setName(name);
-        setAuthor(author);
-    }
 }
