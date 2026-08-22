@@ -23,7 +23,7 @@ public class BookService {
     private static final String NOT_FOUND_ERROR_MESSAGE = "book not found";
 
     public Book add(Book book) {
-        log.info("add new book");
+        log.debug("add new book");
 
         long id = ID_SEQUENCE.getAndIncrement();
         book.setId(id);
@@ -35,7 +35,7 @@ public class BookService {
     }
 
     public List<Book> getAll() {
-        log.info("getting all books");
+        log.debug("getting all books");
 
         return books.values().stream()
                 .sorted(Comparator.comparingLong(Book::getId))
@@ -43,7 +43,7 @@ public class BookService {
     }
 
     public Book get(long id) {
-        log.info("getting book with id: {}", id);
+        log.debug("getting book with id: {}", id);
 
         if(!books.containsKey(id)){
             log.warn("book not found with id: {}", id);
@@ -53,7 +53,7 @@ public class BookService {
     }
 
     public Book update(long id, Book book) {
-        log.info("updating book with id: {}", id);
+        log.debug("updating book with id: {}", id);
 
         if (!books.containsKey(id)) {
             log.warn("book not found with id: {}", id);
@@ -68,7 +68,7 @@ public class BookService {
     }
 
     public Book patch(long id, Book book) {
-        log.info("patch book with id: {}", id);
+        log.debug("patch book with id: {}", id);
 
         if(!books.containsKey(id)){
             log.warn("book not found with id: {}", id);
@@ -88,7 +88,7 @@ public class BookService {
     }
 
     public void delete(long id) {
-        log.info("delete book with id: {}", id);
+        log.debug("delete book with id: {}", id);
 
         if(!books.containsKey(id)){
             log.warn("book not found with id: {}", id);
