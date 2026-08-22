@@ -1,6 +1,6 @@
 package com.example.library.service;
 
-import com.example.library.dto.Book;
+import com.example.library.dto.*;
 import com.example.library.exception.ValidationException;
 import org.springframework.stereotype.Service;
 
@@ -40,16 +40,20 @@ public class BookService {
         return books.get(id);
     }
 
-    public Book update(long id, Book book) {
+    public long update(long id, Book book) {
         if (!books.containsKey(id)) {
-            throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
+            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
         }
-        book.setId(id);
-        books.put(id, book);
-        return book;
+        Book updatedBook = new Book(
+                id,
+                book.getName(),
+                book.getAuthor()
+        );
+        books.put(id, updatedBook);
+        return id;
     }
 
-    public Book patch(long id, Book book) {
+    public long patch(long id, Book book) {
         if(!books.containsKey(id)){
             throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
         }
@@ -60,7 +64,7 @@ public class BookService {
         if (book.getName() != null) {
             savedBook.setName(book.getName());
         }
-        return savedBook;
+        return id;
     }
 
     public void delete(long id) {
