@@ -1,17 +1,17 @@
-package com.example.library.persistence;
+package com.example.library.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "author")
+@Table(name = "category")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class AuthorEntity {
+public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -19,7 +19,4 @@ public class AuthorEntity {
 
     @Column(name = "name", length = 50 , nullable = false)
     private String name;
-
-    @Column(name = "birth_year" , nullable = false)
-    private Integer birthYear;
 }

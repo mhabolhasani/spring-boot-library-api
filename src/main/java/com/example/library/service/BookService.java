@@ -1,26 +1,18 @@
 package com.example.library.service;
 
-import com.example.library.dto.*;
 import com.example.library.exception.ValidationException;
+import com.example.library.persistence.entity.BookEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class BookService {
-
-    private final Map<Long, Book> books = new ConcurrentHashMap<>();
-
-    private static final AtomicLong ID_SEQUENCE = new AtomicLong(1);
-
     private static final String NOT_FOUND_ERROR_CODE = "book_id_invalid";
     private static final String NOT_FOUND_ERROR_MESSAGE = "book not found";
 
-    public Book add(Book book) {
+    public BookEntity add(Book book) {
         long id = ID_SEQUENCE.getAndIncrement();
         book.setId(id);
         books.put(id, book);
