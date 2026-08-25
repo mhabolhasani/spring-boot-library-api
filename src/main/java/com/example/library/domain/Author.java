@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Author {
-    private Integer id;
+    private Long id;
     private String name;
     private Integer birthYear;
 }

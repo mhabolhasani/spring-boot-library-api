@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookDetail {
-    private Integer id;
+    private Long id;
     private String description;
     private String publisher;
     private Integer pageCount;
-    private Integer bookId;
+    private Long bookId;
 }

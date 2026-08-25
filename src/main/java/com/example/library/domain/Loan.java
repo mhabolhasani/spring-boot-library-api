@@ -10,10 +10,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Loan {
-    private Integer id;
+    private Long id;
     private LocalDate loanDate;
     private LocalDate dueDate;
     private LocalDate returnDate;
-    private Integer memberId;
-    private Integer bookId;
+    private Long memberId;
+    private Long bookId;
 }

@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-    private Integer id;
+    private Long id;
     private String title;
     private String isbn;
     private Integer publishedYear;
-    private Author author;
-    private List<Category> categories;
+    private Long authorId;
+    private List<Long> categories;
 }

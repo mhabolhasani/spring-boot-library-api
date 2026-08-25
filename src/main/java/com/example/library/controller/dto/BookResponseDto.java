@@ -1,17 +1,17 @@
 package com.example.library.controller.dto;
 
-import com.example.library.dto.Book;
+import com.example.library.domain.Book;
 
 public record BookResponseDto(
-        long id,
-        String name,
-        String author
+        String title,
+        Integer publushedYear,
+        Long authorId
 ) {
     public static BookResponseDto from(Book book) {
         return new BookResponseDto(
-                book.getId(),
-                book.getName(),
-                book.getAuthor()
+                book.getTitle(),
+                book.getPublishedYear(),
+                book.getAuthorId()
         );
     }
 }

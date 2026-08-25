@@ -40,7 +40,7 @@ public class BookPersistenceAdapter {
                 .toList();
     }
 
-    public Optional<Book> findById(Integer id) {
+    public Optional<Book> findById(Long id) {
         return bookRepository.findById(id).map(BookMapper::toDomain);
     }
 
@@ -50,33 +50,32 @@ public class BookPersistenceAdapter {
         entity.setTitle(book.getTitle());
         entity.setIsbn(book.getIsbn());
         entity.setPublishedYear(book.getPublishedYear());
-        entity.setAuthor(findAuthor(book.getAuthor().getId()));
+        entity.setAuthor(findAuthor(book.getAuthorId()));
         entity.setCategories(findCategories(book.getCategories()));
 
         return BookMapper.toDomain(bookRepository.save(entity));
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         bookRepository.delete(getEntityOrThrow(id));
     }
 
-    private BookEntity getEntityOrThrow(Integer id) {
+    private BookEntity getEntityOrThrow(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ValidationException(BOOK_NOT_FOUND_CODE, BOOK_NOT_FOUND_MESSAGE));
     }
 
-    private AuthorEntity findAuthor(Integer authorId) {
+    private AuthorEntity findAuthor(Long authorId) {
         return authorRepository.findById(authorId)
                 .orElseThrow(() -> new ValidationException(AUTHOR_NOT_FOUND_CODE, AUTHOR_NOT_FOUND_MESSAGE));
     }
 
-    private List<CategoryEntity> findCategories(List<Category> categories) {
-        if (categories == null || categories.isEmpty()) {
+    private List<CategoryEntity> findCategories(List<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Integer> ids = categories.stream().map(Category::getId).toList();
-        List<CategoryEntity> entities = categoryRepository.findAllById(ids);
-        if (entities.size() != ids.size()) {
+        List<CategoryEntity> entities = categoryRepository.findAllById(categoryIds);
+        if (entities.size() != categoryIds.size()) {
             throw new ValidationException(CATEGORY_NOT_FOUND_CODE, CATEGORY_NOT_FOUND_MESSAGE);
         }
         return entities;

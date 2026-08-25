@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
-    private Integer id;
+    private Long id;
     private String name;
     private String email;
-    private Integer referredById;
+    private Long referredById;
 }

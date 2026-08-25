@@ -1,7 +1,7 @@
 package com.example.library.controller;
 
 import com.example.library.controller.dto.*;
-import com.example.library.dto.Book;
+import com.example.library.domain.Book;
 import com.example.library.service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

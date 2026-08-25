@@ -2,6 +2,7 @@ package com.example.library.domain.mapper;
 
 import com.example.library.domain.Book;
 import com.example.library.persistence.entity.BookEntity;
+import com.example.library.persistence.entity.CategoryEntity;
 
 public final class BookMapper {
 
@@ -17,9 +18,9 @@ public final class BookMapper {
                 .title(entity.getTitle())
                 .isbn(entity.getIsbn())
                 .publishedYear(entity.getPublishedYear())
-                .author(AuthorMapper.toDomain(entity.getAuthor()))
+                .authorId(entity.getAuthor().getId())
                 .categories(entity.getCategories().stream()
-                        .map(CategoryMapper::toDomain)
+                        .map(CategoryEntity::getId)
                         .toList())
                 .build();
     }
