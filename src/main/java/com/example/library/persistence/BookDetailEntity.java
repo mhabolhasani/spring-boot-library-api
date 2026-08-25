@@ -15,7 +15,7 @@ public class BookDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer id;
+    private Long id;
 
     @Column(name = "description", length = 100)
     private String description;

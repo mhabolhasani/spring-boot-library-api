@@ -18,7 +18,7 @@ public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer id;
+    private Long id;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;

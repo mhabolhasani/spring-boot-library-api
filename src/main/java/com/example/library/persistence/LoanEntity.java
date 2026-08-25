@@ -17,7 +17,7 @@ public class LoanEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer id;
+    private Long id;
 
     @Column(name = "loan_date")
     private LocalDate loanDate;
