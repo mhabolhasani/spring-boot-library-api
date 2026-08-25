@@ -15,7 +15,7 @@ public class AuthorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", length = 50 , nullable = false)
     private String name;
