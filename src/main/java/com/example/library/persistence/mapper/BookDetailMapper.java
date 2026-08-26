@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.BookDetail;
+import com.example.library.service.domain.BookDetail;
 import com.example.library.persistence.entity.BookDetailEntity;
 
 public final class BookDetailMapper {

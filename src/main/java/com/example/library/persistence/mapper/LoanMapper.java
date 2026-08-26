@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.Loan;
+import com.example.library.service.domain.Loan;
 import com.example.library.persistence.entity.LoanEntity;
 
 public final class LoanMapper {

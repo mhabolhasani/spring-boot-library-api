@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.Member;
+import com.example.library.service.domain.Member;
 import com.example.library.persistence.entity.MemberEntity;
 
 public final class MemberMapper {

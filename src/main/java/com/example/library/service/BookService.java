@@ -1,10 +1,11 @@
 package com.example.library.service;
 
-import com.example.library.domain.Book;
+import com.example.library.service.domain.Book;
 import com.example.library.exception.ValidationException;
 import com.example.library.persistence.adapter.BookPersistenceAdapter;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -56,5 +57,10 @@ public class BookService {
 
     public void delete(Long id) {
         bookPersistenceAdapter.deleteById(id);
+    }
+
+    public List<Book> getBooksNotLoaned(){
+        List<Book> allBooks = null;
+        return allBooks;
     }
 }

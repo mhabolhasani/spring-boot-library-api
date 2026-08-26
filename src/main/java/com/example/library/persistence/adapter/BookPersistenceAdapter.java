@@ -1,8 +1,7 @@
 package com.example.library.persistence.adapter;
 
-import com.example.library.domain.Book;
-import com.example.library.domain.Category;
-import com.example.library.domain.mapper.BookMapper;
+import com.example.library.service.domain.Book;
+import com.example.library.persistence.mapper.BookMapper;
 import com.example.library.exception.ValidationException;
 import com.example.library.persistence.entity.*;
 import com.example.library.persistence.repository.*;
@@ -34,16 +33,6 @@ public class BookPersistenceAdapter {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Book> findAll() {
-        return bookRepository.findAll().stream()
-                .map(BookMapper::toDomain)
-                .toList();
-    }
-
-    public Optional<Book> findById(Long id) {
-        return bookRepository.findById(id).map(BookMapper::toDomain);
-    }
-
     public Book save(Book book) {
         BookEntity entity = BookEntity.builder().build();
 
@@ -54,6 +43,16 @@ public class BookPersistenceAdapter {
         entity.setCategories(findCategories(book.getCategories()));
 
         return BookMapper.toDomain(bookRepository.save(entity));
+    }
+
+    public List<Book> findAll() {
+        return bookRepository.findAll().stream()
+                .map(BookMapper::toDomain)
+                .toList();
+    }
+
+    public Optional<Book> findById(Long id) {
+        return bookRepository.findById(id).map(BookMapper::toDomain);
     }
 
     public void deleteById(Long id) {

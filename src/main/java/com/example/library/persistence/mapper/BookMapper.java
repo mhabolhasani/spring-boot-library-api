@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.Book;
+import com.example.library.service.domain.Book;
 import com.example.library.persistence.entity.BookEntity;
 import com.example.library.persistence.entity.CategoryEntity;
 

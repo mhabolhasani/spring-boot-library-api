@@ -1,6 +1,6 @@
 package com.example.library.controller.dto;
 
-import com.example.library.domain.Book;
+import com.example.library.service.domain.Book;
 
 public record BookResponseDto(
         String title,

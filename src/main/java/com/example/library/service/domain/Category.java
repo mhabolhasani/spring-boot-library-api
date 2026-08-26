@@ -1,4 +1,4 @@
-package com.example.library.domain;
+package com.example.library.service.domain;
 
 import lombok.*;
 
@@ -7,8 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Author {
+public class Category {
     private Long id;
     private String name;
-    private Integer birthYear;
 }

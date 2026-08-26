@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.Author;
+import com.example.library.service.domain.Author;
 import com.example.library.persistence.entity.AuthorEntity;
 
 public final class AuthorMapper {

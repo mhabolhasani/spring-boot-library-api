@@ -1,6 +1,6 @@
-package com.example.library.domain.mapper;
+package com.example.library.persistence.mapper;
 
-import com.example.library.domain.Category;
+import com.example.library.service.domain.Category;
 import com.example.library.persistence.entity.CategoryEntity;
 
 public final class CategoryMapper {
