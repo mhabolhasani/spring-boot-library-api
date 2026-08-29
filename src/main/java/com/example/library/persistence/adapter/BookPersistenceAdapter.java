@@ -5,6 +5,9 @@ import com.example.library.persistence.mapper.BookMapper;
 import com.example.library.exception.ValidationException;
 import com.example.library.persistence.entity.*;
 import com.example.library.persistence.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ public class BookPersistenceAdapter {
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public BookPersistenceAdapter(BookRepository bookRepository,
                                   AuthorRepository authorRepository,
                                   CategoryRepository categoryRepository) {
@@ -34,7 +40,9 @@ public class BookPersistenceAdapter {
     }
 
     public Book save(Book book) {
-        BookEntity entity = BookEntity.builder().build();
+        BookEntity entity = (book.getId() != null)
+                ? getEntityOrThrow(book.getId())
+                : BookEntity.builder().build();
 
         entity.setTitle(book.getTitle());
         entity.setIsbn(book.getIsbn());
@@ -53,6 +61,67 @@ public class BookPersistenceAdapter {
 
     public Optional<Book> findById(Long id) {
         return bookRepository.findById(id).map(BookMapper::toDomain);
+    }
+
+    public List<Book> search(
+            String title,
+            String author,
+            String isbn,
+            Integer maxPageCount
+    ) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BookEntity> query = cb.createQuery(BookEntity.class);
+
+        Root<BookEntity> book = query.from(BookEntity.class);
+
+        Predicate predicate = cb.conjunction();
+
+        if (title != null && !title.isBlank()) {
+            predicate = cb.and(
+                    predicate,
+                    cb.like(
+                            cb.lower(book.get("title")),
+                            "%" + title.toLowerCase() + "%"
+                    )
+            );
+        }
+
+        if (author != null && !author.isBlank()) {
+            Join<BookEntity, AuthorEntity> authorJoin =
+                    book.join("author");
+
+            predicate = cb.and(
+                    predicate,
+                    cb.like(
+                            cb.lower(authorJoin.get("name")),
+                            "%" + author.toLowerCase() + "%"
+                    )
+            );
+        }
+
+        if (isbn != null && !isbn.isBlank()) {
+            predicate = cb.and(
+                    predicate,
+                    cb.equal(book.get("isbn"), isbn)
+            );
+        }
+
+        if (maxPageCount != null) {
+            Root<BookDetailEntity> bookDetail = query.from(BookDetailEntity.class);
+            predicate = cb.and(
+                    predicate,
+                    cb.equal(bookDetail.get("book"), book),
+                    cb.lessThanOrEqualTo(
+                            bookDetail.get("pageCount"),
+                            maxPageCount
+                    )
+            );
+        }
+        query.where(predicate);
+        return entityManager
+                .createQuery(query)
+                .getResultList().stream()
+                .map(BookMapper::toDomain).toList();
     }
 
     public void deleteById(Long id) {

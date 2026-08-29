@@ -1,11 +1,10 @@
 package com.example.library.service;
 
-import com.example.library.service.domain.Book;
 import com.example.library.exception.ValidationException;
 import com.example.library.persistence.adapter.BookPersistenceAdapter;
+import com.example.library.service.domain.Book;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,7 +32,22 @@ public class BookService {
                 .orElseThrow(() -> new ValidationException(BOOK_NOT_FOUND_CODE, BOOK_NOT_FOUND_MESSAGE));
     }
 
+    public List<Book> search(String title ,
+                                String author_name ,
+                                String isbn ,
+                                String page_count){
+        Integer maxPageCount = (page_count != null && !page_count.isBlank())
+                ? Integer.parseInt(page_count)
+                : null;
+        return bookPersistenceAdapter.search(title ,
+                author_name ,
+                isbn,
+                maxPageCount);
+    }
+
     public Book update(Long id, Book book) {
+        get(id);
+        book.setId(id);
         return bookPersistenceAdapter.save(book);
     }
 
@@ -59,8 +73,17 @@ public class BookService {
         bookPersistenceAdapter.deleteById(id);
     }
 
-    public List<Book> getBooksNotLoaned(){
-        List<Book> allBooks = null;
-        return allBooks;
+    public List<Book> search(
+            String title,
+            String author,
+            String isbn,
+            Integer maxPageCount
+    ) {
+        return bookPersistenceAdapter.search(
+                title,
+                author,
+                isbn,
+                maxPageCount
+        );
     }
 }
