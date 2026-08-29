@@ -8,6 +8,7 @@ import com.example.library.persistence.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class BookPersistenceAdapter {
 
     private static final String BOOK_NOT_FOUND_CODE = "book_id_invalid";
@@ -30,14 +32,6 @@ public class BookPersistenceAdapter {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    public BookPersistenceAdapter(BookRepository bookRepository,
-                                  AuthorRepository authorRepository,
-                                  CategoryRepository categoryRepository) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     public Book save(Book book) {
         BookEntity entity = (book.getId() != null)

@@ -3,21 +3,19 @@ package com.example.library.service;
 import com.example.library.exception.ValidationException;
 import com.example.library.persistence.adapter.BookPersistenceAdapter;
 import com.example.library.service.domain.Book;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class BookService {
 
     private static final String BOOK_NOT_FOUND_CODE = "book_id_invalid";
     private static final String BOOK_NOT_FOUND_MESSAGE = "book not found";
 
     private final BookPersistenceAdapter bookPersistenceAdapter;
-
-    public BookService(BookPersistenceAdapter bookPersistenceAdapter) {
-        this.bookPersistenceAdapter = bookPersistenceAdapter;
-    }
 
     public Book add(Book book) {
         return bookPersistenceAdapter.save(book);
@@ -71,19 +69,5 @@ public class BookService {
 
     public void delete(Long id) {
         bookPersistenceAdapter.deleteById(id);
-    }
-
-    public List<Book> search(
-            String title,
-            String author,
-            String isbn,
-            Integer maxPageCount
-    ) {
-        return bookPersistenceAdapter.search(
-                title,
-                author,
-                isbn,
-                maxPageCount
-        );
     }
 }
