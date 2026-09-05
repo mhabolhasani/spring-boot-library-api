@@ -33,14 +33,14 @@ public class BookService {
     }
 
     public List<Book> search(String title ,
-                                String author_name ,
+                                String authorName ,
                                 String isbn ,
-                                String page_count){
-        Integer maxPageCount = (page_count != null && !page_count.isBlank())
-                ? Integer.parseInt(page_count)
+                                String pageCount){
+        Integer maxPageCount = (pageCount != null && !pageCount.isBlank())
+                ? Integer.parseInt(pageCount)
                 : null;
         return bookPersistenceAdapter.search(title ,
-                author_name ,
+                authorName ,
                 isbn,
                 maxPageCount);
     }
