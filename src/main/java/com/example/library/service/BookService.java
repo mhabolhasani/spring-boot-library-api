@@ -1,76 +1,76 @@
 package com.example.library.service;
 
-import com.example.library.dto.*;
 import com.example.library.exception.ValidationException;
+import com.example.library.persistence.adapter.BookPersistenceAdapter;
+import com.example.library.service.domain.Book;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class BookService {
 
-    private final Map<Long, Book> books = new ConcurrentHashMap<>();
+    private static final String BOOK_NOT_FOUND_CODE = "book_id_invalid";
+    private static final String BOOK_NOT_FOUND_MESSAGE = "book not found";
 
-    private static final AtomicLong ID_SEQUENCE = new AtomicLong(1);
+    private final BookPersistenceAdapter bookPersistenceAdapter;
 
-    private static final String NOT_FOUND_ERROR_CODE = "book_id_invalid";
-    private static final String NOT_FOUND_ERROR_MESSAGE = "book not found";
+    public BookService(BookPersistenceAdapter bookPersistenceAdapter) {
+        this.bookPersistenceAdapter = bookPersistenceAdapter;
+    }
 
     public Book add(Book book) {
-        long id = ID_SEQUENCE.getAndIncrement();
-        book.setId(id);
-        books.put(id, book);
-        return book;
+        return bookPersistenceAdapter.save(book);
     }
 
     public List<Book> getAll() {
-        return books.values().stream()
-                .sorted(Comparator.comparingLong(Book::getId))
-                .toList();
+        return bookPersistenceAdapter.findAll();
     }
 
-    public Book get(long id) {
-        if(!books.containsKey(id)){
-            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
-        }
-        return books.get(id);
+    public Book get(Long id) {
+        return bookPersistenceAdapter.findById(id)
+                .orElseThrow(() -> new ValidationException(BOOK_NOT_FOUND_CODE, BOOK_NOT_FOUND_MESSAGE));
     }
 
-    public long update(long id, Book book) {
-        if (!books.containsKey(id)) {
-            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
-        }
-        Book updatedBook = new Book(
-                id,
-                book.getName(),
-                book.getAuthor()
-        );
-        books.put(id, updatedBook);
-        return id;
+    public List<Book> search(String title ,
+                                String authorName ,
+                                String isbn ,
+                                String pageCount){
+        Integer maxPageCount = (pageCount != null && !pageCount.isBlank())
+                ? Integer.parseInt(pageCount)
+                : null;
+        return bookPersistenceAdapter.search(title ,
+                authorName ,
+                isbn,
+                maxPageCount,
+                true);
     }
 
-    public long patch(long id, Book book) {
-        if(!books.containsKey(id)){
-            throw new ValidationException(NOT_FOUND_ERROR_CODE , NOT_FOUND_ERROR_MESSAGE);
-        }
-        Book savedBook = books.get(id);
-        if (book.getAuthor() != null) {
-            savedBook.setAuthor(book.getAuthor());
-        }
-        if (book.getName() != null) {
-            savedBook.setName(book.getName());
-        }
-        return id;
+    public Book update(Long id, Book book) {
+        get(id);
+        book.setId(id);
+        return bookPersistenceAdapter.save(book);
     }
 
-    public void delete(long id) {
-        if(!books.containsKey(id)){
-            throw new ValidationException(NOT_FOUND_ERROR_CODE, NOT_FOUND_ERROR_MESSAGE);
-        }
-        books.remove(id);
+    public Book patch(Long id, Book book) {
+        Book existing = get(id);
+        Book merged = Book.builder()
+                .id(id)
+                .title(book.getTitle() != null ? book.getTitle() : existing.getTitle())
+                .isbn(book.getIsbn() != null ? book.getIsbn() : existing.getIsbn())
+                .publishedYear(book.getPublishedYear() != null ? book.getPublishedYear() : existing.getPublishedYear())
+                .authorId(book.getAuthorId() != null
+                        ? book.getAuthorId()
+                        :existing.getAuthorId())
+                .categories(book.getCategories() != null
+                        ? (book.getCategories())
+                        : existing.getCategories())
+                .build();
+
+        return bookPersistenceAdapter.save(merged);
+    }
+
+    public void delete(Long id) {
+        bookPersistenceAdapter.deleteById(id);
     }
 }
