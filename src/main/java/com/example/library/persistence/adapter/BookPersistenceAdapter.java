@@ -67,7 +67,8 @@ public class BookPersistenceAdapter {
             String title,
             String author,
             String isbn,
-            Integer maxPageCount
+            Integer maxPageCount,
+            Boolean isAvailable
     ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<BookEntity> query = cb.createQuery(BookEntity.class);
@@ -115,6 +116,13 @@ public class BookPersistenceAdapter {
                             bookDetail.get("pageCount"),
                             maxPageCount
                     )
+            );
+        }
+        if(isAvailable){
+            Join<BookEntity, LoanEntity> loan = book.join("loan");
+            predicate = cb.and(
+                    predicate,
+                    cb.isNull(loan.get("returnDate"))
             );
         }
         query.where(predicate);

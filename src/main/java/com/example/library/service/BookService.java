@@ -42,7 +42,8 @@ public class BookService {
         return bookPersistenceAdapter.search(title ,
                 authorName ,
                 isbn,
-                maxPageCount);
+                maxPageCount,
+                true);
     }
 
     public Book update(Long id, Book book) {
@@ -71,19 +72,5 @@ public class BookService {
 
     public void delete(Long id) {
         bookPersistenceAdapter.deleteById(id);
-    }
-
-    public List<Book> search(
-            String title,
-            String author,
-            String isbn,
-            Integer maxPageCount
-    ) {
-        return bookPersistenceAdapter.search(
-                title,
-                author,
-                isbn,
-                maxPageCount
-        );
     }
 }
