@@ -44,13 +44,16 @@ public class BookController {
     @GetMapping("/available")
     public ResponseEntity<List<BookResponseDto>> search(
             @RequestParam(required = false) String title ,
-            @RequestParam(required = false) String author_name ,
+            @RequestParam(required = false) String authorName ,
             @RequestParam(required = false) String isbn ,
-            @RequestParam(required = false) String page_count){
-        return ResponseEntity.status(HttpStatus.OK).body(bookService.search(title,author_name,isbn,page_count).stream()
+            @RequestParam(required = false) String pageCount){
+        var result = bookService.search(title, authorName, isbn, pageCount);
+
+        var responseDto = result.stream()
                 .map(BookResponseDto::from)
-                .toList()
-        );
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 
