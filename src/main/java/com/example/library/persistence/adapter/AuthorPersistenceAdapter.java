@@ -30,7 +30,7 @@ public class AuthorPersistenceAdapter {
     }
 
     public List<Author> findAuthorsOrderByLoanCountDesc() {
-        return authorRepository.findAuthorsByLoanCountDesc().stream()
+        return authorRepository.findAuthorsOrderByLoanCountDesc().stream()
                 .map(AuthorMapper::toDomain)
                 .toList();
     }

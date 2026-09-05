@@ -30,5 +30,5 @@ public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
         group by a
         order by count(l) desc
         """)
-    List<AuthorEntity> findAuthorsByLoanCountDesc();
+    List<AuthorEntity> findAuthorsOrderByLoanCountDesc();
 }
