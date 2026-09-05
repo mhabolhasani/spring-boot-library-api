@@ -1,7 +1,7 @@
 package com.example.library.controller;
 
 import com.example.library.controller.dto.*;
-import com.example.library.dto.Book;
+import com.example.library.service.domain.Book;
 import com.example.library.service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +40,19 @@ public class BookController {
         BookResponseDto bookResponseDto = BookResponseDto.from(book);
         return ResponseEntity.status(HttpStatus.OK).body(bookResponseDto);
     }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<BookResponseDto>> search(
+            @RequestParam(required = false) String title ,
+            @RequestParam(required = false) String author_name ,
+            @RequestParam(required = false) String isbn ,
+            @RequestParam(required = false) String page_count){
+        return ResponseEntity.status(HttpStatus.OK).body(bookService.search(title,author_name,isbn,page_count).stream()
+                .map(BookResponseDto::from)
+                .toList()
+        );
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> update(@PathVariable long id, @RequestBody UpdateBookRequestDto updateBookRequestDto){
