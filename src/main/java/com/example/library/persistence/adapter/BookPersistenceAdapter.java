@@ -8,6 +8,7 @@ import com.example.library.persistence.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -72,60 +73,18 @@ public class BookPersistenceAdapter {
     ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<BookEntity> query = cb.createQuery(BookEntity.class);
-
         Root<BookEntity> book = query.from(BookEntity.class);
 
-        Predicate predicate = cb.conjunction();
+        PredicateSpecification<BookEntity> spec = hasTitle(title)
+                .and(hasAuthor(author))
+                .and(hasIsbn(isbn))
+                .and(hasMaxPageCount(maxPageCount, query))
+                .and(isAvailable(isAvailable, query));
 
-        if (title != null && !title.isBlank()) {
-            predicate = cb.and(
-                    predicate,
-                    cb.like(
-                            cb.lower(book.get("title")),
-                            "%" + title.toLowerCase() + "%"
-                    )
-            );
-        }
+        query.select(book)
+                .where(spec.toPredicate(book, cb))
+                .distinct(true);
 
-        if (author != null && !author.isBlank()) {
-            Join<BookEntity, AuthorEntity> authorJoin =
-                    book.join("author");
-
-            predicate = cb.and(
-                    predicate,
-                    cb.like(
-                            cb.lower(authorJoin.get("name")),
-                            "%" + author.toLowerCase() + "%"
-                    )
-            );
-        }
-
-        if (isbn != null && !isbn.isBlank()) {
-            predicate = cb.and(
-                    predicate,
-                    cb.equal(book.get("isbn"), isbn)
-            );
-        }
-
-        if (maxPageCount != null) {
-            Root<BookDetailEntity> bookDetail = query.from(BookDetailEntity.class);
-            predicate = cb.and(
-                    predicate,
-                    cb.equal(bookDetail.get("book"), book),
-                    cb.lessThanOrEqualTo(
-                            bookDetail.get("pageCount"),
-                            maxPageCount
-                    )
-            );
-        }
-        if(isAvailable){
-            Join<BookEntity, LoanEntity> loan = book.join("loan");
-            predicate = cb.and(
-                    predicate,
-                    cb.isNull(loan.get("returnDate"))
-            );
-        }
-        query.where(predicate);
         return entityManager
                 .createQuery(query)
                 .getResultList().stream()
@@ -155,5 +114,69 @@ public class BookPersistenceAdapter {
             throw new ValidationException(CATEGORY_NOT_FOUND_CODE, CATEGORY_NOT_FOUND_MESSAGE);
         }
         return entities;
+    }
+
+    public PredicateSpecification<BookEntity> hasTitle(String title) {
+        return (from, builder) -> {
+            if (title == null || title.isBlank()) {
+                return builder.conjunction();
+            }
+            return builder.like(builder.lower(from.get("title")),
+                    "%" + title.toLowerCase() + "%");
+        };
+    }
+
+    public PredicateSpecification<BookEntity> hasAuthor(String authorName) {
+        return (from, builder) -> {
+            if (authorName == null || authorName.isBlank()) {
+                return builder.conjunction();
+            }
+            Join<BookEntity, AuthorEntity> authorJoin = from.join("author");
+            return builder.like(builder.lower(authorJoin.get("name")),
+                    "%" + authorName.toLowerCase() + "%");
+        };
+    }
+
+    public PredicateSpecification<BookEntity> hasIsbn(String isbn) {
+        return (from, builder) -> {
+            if (isbn == null || isbn.isBlank()) {
+                return builder.conjunction();
+            }
+            return builder.equal(from.get("isbn"),
+                    isbn);
+        };
+    }
+
+    public PredicateSpecification<BookEntity> hasMaxPageCount(Integer maxPageCount, CriteriaQuery<?> query) {
+        return (book, builder) -> {
+            if (maxPageCount == null) {
+                return builder.conjunction();
+            }
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<BookDetailEntity> detail = subquery.from(BookDetailEntity.class);
+            subquery.select(detail.get("id"));
+            subquery.where(
+                    builder.equal(detail.get("book"), book),
+                    builder.lessThanOrEqualTo(detail.get("pageCount"), maxPageCount)
+            );
+            return builder.exists(subquery);
+        };
+    }
+
+    public PredicateSpecification<BookEntity> isAvailable(Boolean isAvailable, CriteriaQuery<?> query) {
+        return (book, builder) -> {
+            if (isAvailable == null) {
+                return builder.conjunction();
+            }
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<LoanEntity> loan = subquery.from(LoanEntity.class);
+            subquery.select(loan.get("id"));
+            subquery.where(
+                    builder.equal(loan.get("book"), book),
+                    builder.isNull(loan.get("returnDate"))
+            );
+            Predicate hasActiveLoan = builder.exists(subquery);
+            return isAvailable ? builder.not(hasActiveLoan) : hasActiveLoan;
+        };
     }
 }
