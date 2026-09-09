@@ -1,0 +1,286 @@
+databaseChangeLog:
+
+    - changeSet:
+          id: create_author_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: author
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: author_pkey
+                        - column:
+                              name: birth_year
+                              type: INTEGER
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: name
+                              type: VARCHAR(50)
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: create_book_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: book
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: book_pkey
+                        - column:
+                              name: isbn
+                              type: VARCHAR(20)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: published_year
+                              type: INTEGER
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: title
+                              type: VARCHAR(50)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: author_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+    - changeSet:
+          id: fk_book_author
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_book_author
+                    baseTableName: book
+                    baseColumnNames: author_id
+                    referencedColumnNames: id
+                    referencedTableName: author
+
+    - changeSet:
+          id: unique_isbn_book
+          author: mhabolhasani
+          changes:
+              - addUniqueConstraint:
+                    tableName: book
+                    columnNames: isbn
+                    constraintName: unique_isbn_book
+
+    - changeSet:
+          id: create_category_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: category
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: category_pkey
+                        - column:
+                              name: name
+                              type: VARCHAR(50)
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: create_book_category_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: book_category
+                    columns:
+                        - column:
+                              name: book_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: category_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: fk_book_category_book
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_book_category_book
+                    baseTableName: book_category
+                    baseColumnNames: book_id
+                    referencedTableName: book
+                    referencedColumnNames: id
+
+    - changeSet:
+          id: fk_book_category_category
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_book_category_category
+                    baseTableName: book_category
+                    baseColumnNames: category_id
+                    referencedTableName: category
+                    referencedColumnNames: id
+
+    - changeSet:
+          id: create_book_detail_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: book_detail
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  primaryKeyName: book_detail_pkey
+                                  nullable: false
+                                  primaryKey: true
+                        - column:
+                              name: description
+                              type: VARCHAR(100)
+                        - column:
+                              name: page_count
+                              type: INTEGER
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: publisher
+                              type: VARCHAR(50)
+                        - column:
+                              name: book_id
+                              type: BIGINT
+
+    - changeSet:
+          id: fk_book_detail_book
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_book_detail_book
+                    baseTableName: book_detail
+                    baseColumnNames: book_id
+                    referencedTableName: book
+                    referencedColumnNames: id
+
+    - changeSet:
+          id: unique_book_id_detail
+          author: mhabolhasani
+          changes:
+              - addUniqueConstraint:
+                    tableName: book_detail
+                    columnNames: book_id
+                    constraintName: unique_book_id_detail
+
+    - changeSet:
+          id: create_member_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: member
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: member_pkey
+                        - column:
+                              name: email
+                              type: VARCHAR(255)
+                        - column:
+                              name: name
+                              type: VARCHAR(50)
+                        - column:
+                              name: referred_by
+                              type: BIGINT
+
+    - changeSet:
+          id: fk_member_referred_by
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_member_referred_by
+                    baseTableName: member
+                    baseColumnNames: referred_by
+                    referencedTableName: member
+                    referencedColumnNames: id
+
+    - changeSet:
+          id: create_loan_table
+          author: mhabolhasani
+          changes:
+              - createTable:
+                    tableName: loan
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              autoIncrement: true
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: loan_pkey
+                        - column:
+                              name: due_date
+                              type: date
+                        - column:
+                              name: loan_date
+                              type: date
+                        - column:
+                              name: return_date
+                              type: date
+                        - column:
+                              name: book_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: member_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: fk_loan_member
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_loan_member
+                    baseTableName: loan
+                    baseColumnNames: member_id
+                    referencedTableName: member
+                    referencedColumnNames: id
+
+    - changeSet:
+          id: fk_loan_book
+          author: mhabolhasani
+          changes:
+              - addForeignKeyConstraint:
+                    constraintName: fk_loan_book
+                    baseTableName: loan
+                    baseColumnNames: book_id
+                    referencedTableName: book
+                    referencedColumnNames: id
