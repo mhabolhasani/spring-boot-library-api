@@ -1,9 +1,9 @@
 package com.example.library;
 
-import com.example.library.domain.exception.ValidationException;
-import com.example.library.application.port.out.BookPersistencePort;
+import com.example.library.adapter.out.persistence.BookPersistenceAdapter;
 import com.example.library.application.service.BookService;
 import com.example.library.domain.Book;
+import com.example.library.domain.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class BookServiceTest {
 
 	@Mock
-	private BookPersistencePort bookPersistenceAdapter;
+	private BookPersistenceAdapter bookPersistenceAdapter;
 
 	@InjectMocks
 	private BookService bookService;
