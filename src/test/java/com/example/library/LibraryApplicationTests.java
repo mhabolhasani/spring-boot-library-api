@@ -1,9 +1,9 @@
 package com.example.library;
 
-import com.example.library.exception.ValidationException;
-import com.example.library.persistence.adapter.BookPersistenceAdapter;
-import com.example.library.service.BookService;
-import com.example.library.service.domain.Book;
+import com.example.library.adapter.out.persistence.BookPersistenceAdapter;
+import com.example.library.application.service.BookService;
+import com.example.library.domain.Book;
+import com.example.library.domain.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
